@@ -6,6 +6,13 @@ import sys
 from itertools import chain
 
 
+BLACK = 'BLACK'
+BLUE = 'BLUE'
+GREEN = 'GREEN'
+RED = 'RED'
+YELLOW = 'YELLOW'
+
+
 def cycle(_iter):
     l = len(_iter)
     i = 0
@@ -15,8 +22,17 @@ def cycle(_iter):
 
 
 class ColorText(object):
-    def __init__(self):
-        self.base = self.make_color(self.get_green())
+    def __init__(self, base_color=GREEN):
+        if base_color == RED:
+            self.base = self.make_color(self.get_red())
+        elif base_color == GREEN:
+            self.base = self.make_color(self.get_green())
+        elif base_color == BLUE:
+            self.base = self.make_color(self.get_blue())
+        elif base_color == YELLOW:
+            self.base = self.make_color(self.get_yellow())
+        elif base_color == BLACK:
+            self.base = self.make_color(self.get_black())
 
         self.colors = cycle(self.base)
         self.color = next(self.colors)
@@ -43,8 +59,20 @@ class ColorText(object):
     def rgb(self, red, green, blue):
         return (red * 36) + (green * 6) + blue + 16
 
+    def get_red(self):
+        return [self.rgb(i, 0, 0) for i in xrange(1, 6)]
+
     def get_green(self):
         return [self.rgb(0, i, 0) for i in xrange(1, 6)]
+
+    def get_blue(self):
+        return [self.rgb(0, 0, i) for i in xrange(1, 6)]
+
+    def get_yellow(self):
+        return [self.rgb(i, i, 0) for i in xrange(1, 6)]
+
+    def get_black(self):
+        return range(232, 242)
 
     def colorize_file(self, _file):
         for i, line in enumerate(_file, start=2):
