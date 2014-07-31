@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import unicode_literals
 
 
 import sys
@@ -11,6 +12,17 @@ BLUE = 'BLUE'
 GREEN = 'GREEN'
 RED = 'RED'
 YELLOW = 'YELLOW'
+
+if sys.hexversion >= 0x03000000:
+    raw_input = input
+    xrange = range
+    range = lambda *a, **kw: list(xrange(*a, **kw))
+else:
+    from codecs import open
+
+
+def uni_open(filename):
+    return open(filename, mode='r', encoding='utf-8')
 
 
 class ColorText(object):
@@ -101,7 +113,7 @@ def main():
             finally:
                 sys.exit(0)
         else:
-            with open(filename, 'rb') as _file:
+            with uni_open(filename) as _file:
                 ct.colorize_file(_file)
     ct.reset_color()
 
