@@ -3,6 +3,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 
+import math
 import sys
 from itertools import chain, cycle
 
@@ -12,6 +13,7 @@ BLUE = 'BLUE'
 GREEN = 'GREEN'
 RED = 'RED'
 YELLOW = 'YELLOW'
+RAINBOW = 'RAINBOW'
 
 if sys.hexversion >= 0x03000000:
     raw_input = input
@@ -26,11 +28,13 @@ def uni_open(filename):
 
 
 class ColorText(object):
-    def __init__(self, base_color=GREEN, columns=5, color_list=None):
+    def __init__(self, base_color=RAINBOW, columns=5, color_list=None):
         self.columns = columns
         self.i = 2
         if not color_list is None:
             self.base = self.make_color(color_list)
+        elif base_color == RAINBOW:
+            self.base = self.make_color(self.get_rainbow())
         elif base_color == RED:
             self.base = self.make_color(self.get_red())
         elif base_color == GREEN:
@@ -51,6 +55,8 @@ class ColorText(object):
         result = ''
         if fg:
             result += '\x1b[38;5;%dm' % fg
+        # if bg:
+        #     result += '\x1b[48;5;%dm' % bg
         return result
 
     def reset_color(self):
@@ -61,13 +67,25 @@ class ColorText(object):
             chain(
                 *map(
                     lambda c: (c,) * self.columns,
-                    (lambda l: l+l[::-1])(color_list)
+                    (lambda l: l[1:]+l[::-1][:-1])(color_list)
                 )
             )
         )
 
     def rgb(self, red, green, blue, hue=16):
         return (red * 36) + (green * 6) + blue + hue
+
+    def rainbow(self, X):
+        red = (math.sin(X) * 127) + 128
+        green = (math.sin(X + 2*math.pi/3.0) * 127) + 128
+        blue = (math.sin(X + 4*math.pi/3.0) * 127) + 128
+        return map(lambda x: int((x*6)/255.0), (red, green, blue))
+
+    def get_rainbow(self):
+        return list(self.rgb(
+            *self.rainbow(X),
+            hue=16
+        ) for X in xrange(1, 16))
 
     def get_red(self):
         return [self.rgb(i, 0, 0) for i in xrange(1, 6)]
