@@ -3,7 +3,7 @@ from __future__ import print_function
 
 
 import sys
-from itertools import chain
+from itertools import chain, cycle
 
 
 BLACK = 'BLACK'
@@ -11,14 +11,6 @@ BLUE = 'BLUE'
 GREEN = 'GREEN'
 RED = 'RED'
 YELLOW = 'YELLOW'
-
-
-def cycle(_iter):
-    l = len(_iter)
-    i = 0
-    while True:
-        yield _iter[i % l]
-        i += 1
 
 
 class ColorText(object):
