@@ -96,8 +96,21 @@ class ColorText(object):
 def main():
     ct = ColorText()
     for filename in sys.argv[1:] or ['-']:
-        with open(filename, 'rb') as _file:
-            ct.colorize_file(_file)
+        if filename == '-':
+            try:
+                while True:
+                    ct.reset_color()
+                    t = raw_input()
+                    print(ct.colorize(t))
+            except EOFError:
+                pass
+            except KeyboardInterrupt:
+                print()
+            finally:
+                sys.exit(0)
+        else:
+            with open(filename, 'rb') as _file:
+                ct.colorize_file(_file)
     ct.reset_color()
 
 if __name__ == '__main__':
