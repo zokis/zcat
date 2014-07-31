@@ -79,13 +79,27 @@ class ColorText(object):
         red = (math.sin(X) * 127) + 128
         green = (math.sin(X + 2*math.pi/3.0) * 127) + 128
         blue = (math.sin(X + 4*math.pi/3.0) * 127) + 128
-        return map(lambda x: int((x*6)/255.0), (red, green, blue))
+        return map(lambda x: int((x*5)/255.0), (red, green, blue))
 
     def get_rainbow(self):
-        return list(self.rgb(
-            *self.rainbow(X),
-            hue=16
-        ) for X in xrange(1, 16))
+        return list(
+            chain(
+                *zip(
+                    [
+                        self.rgb(
+                            *self.rainbow(X),
+                            hue=16
+                        ) for X in xrange(1, 16)
+                    ],
+                    [
+                        self.rgb(
+                            *self.rainbow(X),
+                            hue=17
+                        ) for X in xrange(1, 16)
+                    ]
+                )
+            )
+        )
 
     def get_red(self):
         return [self.rgb(i, 0, 0) for i in xrange(1, 6)]
