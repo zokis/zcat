@@ -26,8 +26,12 @@ def uni_open(filename):
 
 
 class ColorText(object):
-    def __init__(self, base_color=GREEN):
-        if base_color == RED:
+    def __init__(self, base_color=GREEN, columns=5, color_list=None):
+        self.columns = columns
+        self.i = 2
+        if not color_list is None:
+            self.base = self.make_color(color_list)
+        elif base_color == RED:
             self.base = self.make_color(self.get_red())
         elif base_color == GREEN:
             self.base = self.make_color(self.get_green())
@@ -37,6 +41,8 @@ class ColorText(object):
             self.base = self.make_color(self.get_yellow())
         elif base_color == BLACK:
             self.base = self.make_color(self.get_black())
+        else:
+            self.base = self.make_color(self.get_red())
 
         self.colors = cycle(self.base)
         self.color = next(self.colors)
@@ -54,7 +60,7 @@ class ColorText(object):
         return list(
             chain(
                 *map(
-                    lambda c: (c,) * 5,
+                    lambda c: (c,) * self.columns,
                     (lambda l: l+l[::-1])(color_list)
                 )
             )
