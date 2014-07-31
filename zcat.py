@@ -66,8 +66,8 @@ class ColorText(object):
             )
         )
 
-    def rgb(self, red, green, blue):
-        return (red * 36) + (green * 6) + blue + 16
+    def rgb(self, red, green, blue, hue=16):
+        return (red * 36) + (green * 6) + blue + hue
 
     def get_red(self):
         return [self.rgb(i, 0, 0) for i in xrange(1, 6)]
