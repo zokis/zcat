@@ -88,7 +88,11 @@ class ColorText(object):
         for i, line in enumerate(_file, start=2):
             print(self.colorize(line, i), end='')
 
-    def colorize(self, line, i):
+    def colorize(self, line, i=None):
+        if i is None:
+            i = self.i
+            self.i += 1
+
         new_line = []
         for c in line:
             color = self._set_color(self.color)
