@@ -6,14 +6,16 @@ from __future__ import unicode_literals
 import math
 import sys
 from itertools import chain, cycle
+from optparse import OptionParser
 
 
 BLACK = 'BLACK'
 BLUE = 'BLUE'
 GREEN = 'GREEN'
+PURPLE = 'PURPLE'
+RAINBOW = 'RAINBOW'
 RED = 'RED'
 YELLOW = 'YELLOW'
-RAINBOW = 'RAINBOW'
 
 if sys.hexversion >= 0x03000000:
     raw_input = input
@@ -28,7 +30,7 @@ def uni_open(filename):
 
 
 class ColorText(object):
-    def __init__(self, base_color=RAINBOW, columns=5, color_list=None):
+    def __init__(self, base_color=RAINBOW, columns=15, color_list=None):
         self.columns = columns
         self.i = 2
         if not color_list is None:
@@ -45,6 +47,8 @@ class ColorText(object):
             self.base = self.make_color(self.get_yellow())
         elif base_color == BLACK:
             self.base = self.make_color(self.get_black())
+        elif base_color == PURPLE:
+            self.base = self.make_color(self.get_purple())
         else:
             self.base = self.make_color(self.get_red())
 
@@ -114,6 +118,9 @@ class ColorText(object):
     def get_black(self):
         return range(232, 242)
 
+    def get_purple(self):
+        return [self.rgb(i, 0, i, hue=0) for i in xrange(1, 6)]
+
     def colorize_file(self, _file):
         for i, line in enumerate(_file, start=2):
             print(self.colorize(line, i), end='')
@@ -137,9 +144,17 @@ class ColorText(object):
         return ''.join(new_line)
 
 
-def main():
-    ct = ColorText()
-    for filename in sys.argv[1:] or ['-']:
+def main(argv):
+    opar = OptionParser()
+    opar.add_option("-C", "--columns", dest="columns",
+                    help="columns", type="int", default=5)
+    opar.add_option("-c", "--color", dest="color",
+                    help="Colors: RED BLUE GREEN YELLOW BLACK and RAINBOW", type="str", default=RAINBOW)
+
+    options, args = opar.parse_args(argv)
+
+    ct = ColorText(base_color=options.color, columns=options.columns)
+    for filename in args[1:] or ['-']:
         if filename == '-':
             try:
                 while True:
@@ -158,4 +173,4 @@ def main():
     ct.reset_color()
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
